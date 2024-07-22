@@ -22,18 +22,15 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-app.use(express.static('public')); // Serve static files
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to limit access to local network
 function limitToLocalNetwork(req, res, next) {
     const ip = req.ip || req.connection.remoteAddress;
     console.log(`Request IP: ${ip}`); // Log the IP address of the request
     // Check if IP address starts with "192.168." or "172.30."
-    if (ip.startsWith('192.168.') || ip.startsWith('172.30.')) {
+    if (ip.startsWith('192.168.') || ip.startsWith('172.30.') || ip.startsWith('84.115.142.3')) {
         next(); 
     } else {
         res.status(403).json({ error: 'Access denied.' });
