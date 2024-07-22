@@ -25,6 +25,11 @@ const upload = multer({ storage: storage });
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/', (req, res) => { 
+    res.sendFile(path.join(__dirname, 'index.html'));
+
+ }
+
 // Middleware to limit access to local network
 function limitToLocalNetwork(req, res, next) {
     const ip = req.ip || req.connection.remoteAddress;
@@ -36,6 +41,7 @@ function limitToLocalNetwork(req, res, next) {
         res.status(403).json({ error: 'Access denied.' });
     }
 }
+)
 
 // Protect the upload route with the customAuth middleware
 app.post('/upload', limitToLocalNetwork, upload.single('file'), (req, res) => {
