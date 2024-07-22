@@ -24,29 +24,24 @@ const upload = multer({ storage: storage });
 
 app.use(express.static('public')); // Serve static files
 
-// Custom Authentication Middleware for upload route
-function customAuth(req, res, next) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-        return res.status(401).send('Authentication required');
-    }
-
-    const encodedCredentials = authHeader.split(' ')[1];
-    const [username, password] = Buffer.from(encodedCredentials, 'base64').toString('utf8').split(':');
-
-    if (username === process.env.UPLOAD_USER && password === process.env.UPLOAD_PASSWORD) {
-        next();
-    } else {
-        res.status(403).send('Access Denied');
-    }
-}
-
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Middleware to limit access to local network
+function limitToLocalNetwork(req, res, next) {
+    const ip = req.ip || req.connection.remoteAddress;
+    console.log(`Request IP: ${ip}`); // Log the IP address of the request
+    // Check if IP address starts with "192.168." or "172.30."
+    if (ip.startsWith('192.168.') || ip.startsWith('172.30.')) {
+        next(); 
+    } else {
+        res.status(403).json({ error: 'Access denied.' });
+    }
+}
+
 // Protect the upload route with the customAuth middleware
-app.post('/upload', customAuth, upload.single('file'), (req, res) => {
+app.post('/upload', limitToLocalNetwork, upload.single('file'), (req, res) => {
     const fileLink = `${req.protocol}://${req.get('host')}/files/${req.file.filename}`;
     res.json({ link: fileLink });
 });
