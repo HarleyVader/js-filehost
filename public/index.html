@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Brandynette's Filehost</title>
+    <!-- HTML remains the same, but JavaScript is updated to fetch and display the list of files after upload -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateFileList(); // Fetch and display the list of files
+            })
+            .catch(error => console.error('Error uploading file:', error));
+        });
+
+        function updateFileList() {
+            fetch('/list-files')
+            .then(response => response.json())
+            .then(data => {
+                const listContainer = document.getElementById('fileList');
+                listContainer.innerHTML = ''; // Clear existing list
+                data.files.forEach(fileLink => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.href = fileLink;
+                    link.textContent = fileLink.split('/').pop(); // Display filename
+                    link.target = "_blank"; // Opens the link in a new tab
+                    listItem.appendChild(link);
+                    listContainer.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching file list:', error));
+        }
+    });
+</script>
+</head>
+<body>
+    <h1>Brandynette's Filehost</h1>
+    <form enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <button type="submit">Upload File</button>
+    </form>
+    <h2>Files</h2>
+    <ul id="fileList">
+        <!-- File links will be inserted here dynamically -->
+    </ul>
+</body>
+</html>
