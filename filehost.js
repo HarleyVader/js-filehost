@@ -6,6 +6,7 @@ const http = require('http');
 const fs = require('fs');
 
 const app = express();
+const server = http.createServer(app);
 const PORT = process.env.PORT;
 
 // Ensure uploads directory exists
@@ -66,6 +67,6 @@ app.get('/list-files', (req, res) => {
     });
 });
 
-http.createServer(app).listen(PORT, () => {
-    console.log(`Filehost server running on http://localhost:${PORT}`);
+server.listen(PORT, () => {
+    console.log(`Server listening on *:${PORT}`);
 });
