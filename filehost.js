@@ -47,7 +47,7 @@ function limitToLocalNetwork(req, res, next) {
 */
 // Protect the upload route with the customAuth middleware
 app.post('/upload', limitToLocalNetwork, upload.single('file'), (req, res) => {
-    const fileLink = `${req.protocol}://${req.get('host')}/files/${req.file.filename}`;
+    const fileLink = `https://${req.get('host')}/files/${req.file.filename}`;
     res.json({ link: fileLink });
 });
 
@@ -66,7 +66,7 @@ app.get('/list-files', (req, res) => {
         if (err) {
             return res.status(500).send('Failed to list files');
         }
-        res.json({ files: files.map(file => `${req.protocol}://${req.get('host')}/files/${file}`) });
+        res.json({ files: files.map(file => `https://${req.get('host')}/files/${file}`) });
     });
 });
 
