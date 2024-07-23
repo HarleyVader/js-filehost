@@ -9,6 +9,8 @@ const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT;
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Ensure uploads directory exists
 const uploadsDir = path.join(__dirname, 'uploads');
 fs.mkdirSync(uploadsDir, { recursive: true });
@@ -22,9 +24,6 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
-
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to limit access to local network
 function limitToLocalNetwork(req, res, next) {
