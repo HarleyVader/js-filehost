@@ -26,10 +26,6 @@ const upload = multer({ storage: storage });
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => { 
-    res.sendFile(path.join(__dirname, 'index.html'));	
-});
-
 // Middleware to limit access to local network
 function limitToLocalNetwork(req, res, next) {
     // This middleware is now disabled for demonstration; remove or adjust as needed.
