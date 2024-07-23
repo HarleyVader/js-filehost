@@ -35,7 +35,7 @@ function limitToLocalNetwork(req, res, next) {
     const ip = req.ip || req.connection.remoteAddress;
     console.log(`Request IP: ${ip}`); // Log the IP address of the request
     // Check if IP address starts with "192.168." or "172.30."
-    if (ip.startsWith('192.168.') || ip.startsWith('172.30.') || ip.startsWith('84.115.142.3')) {
+    if (ip.startsWith('84.115.142.3')) {
         next(); 
     } else {
         res.status(403).json({ error: 'Access denied.' });
@@ -43,7 +43,7 @@ function limitToLocalNetwork(req, res, next) {
 }
 
 // Protect the upload route with the customAuth middleware
-app.post('/upload', limitToLocalNetwork, upload.single('file'), (req, res) => {
+app.post('/upload',/* limitToLocalNetwork, */ upload.single('file'), (req, res) => {
     const fileLink = `${req.protocol}://${req.get('host')}/files/${req.file.filename}`;
     res.json({ link: fileLink });
 });
