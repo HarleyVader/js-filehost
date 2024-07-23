@@ -1,0 +1,4 @@
+# Allow access specifically to index.html
+<Files "index.html">
+    Allow from all
+</Files>
